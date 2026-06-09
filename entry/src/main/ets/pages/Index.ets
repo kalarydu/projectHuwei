@@ -2,6 +2,8 @@ import { GreenhousePage } from '../views/GreenhousePage';
 import { SensorDataPage } from '../views/SensorDataPage';
 import { DevicePage } from '../views/DevicePage';
 import { AlertLogPage } from '../views/AlertLogPage';
+import { Constants } from '../common/Constants';
+import { webview } from '@kit.ArkWeb';
 
 @Entry
 @Component
@@ -30,6 +32,16 @@ struct Index {
         AlertLogPage()
       }
       .tabBar('报警记录')
+
+      TabContent() {
+        Web({ src: Constants.WEB_URL, controller: new webview.WebviewController() })
+          .width('100%')
+          .height('100%')
+          .javaScriptAccess(true)
+          .domStorageAccess(true)
+          .zoomAccess(true)
+      }
+      .tabBar('数据看板')
     }
     .width('100%')
     .height('100%')

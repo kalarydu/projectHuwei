@@ -1,9 +1,12 @@
 // 后端 API 基础地址，模拟器中 10.0.2.2 映射到宿主机 localhost
 export class Constants {
-  static readonly BASE_URL: string = 'http://10.0.2.2:8080';
+  static readonly BASE_URL: string = 'http://10.190.124.12:8080';
 
   // MQTT Broker 配置 (WebSocket)
-  static readonly MQTT_BROKER_URL: string = 'tcp://10.190.156.163:1883';
+  // Web 看板地址（demo 的 web 前端，含折线图等图表）
+  static readonly WEB_URL: string = 'http://10.190.124.12:8080';
+
+  static readonly MQTT_BROKER_URL: string = 'tcp://10.190.124.12:1883';
   static readonly MQTT_CLIENT_ID_PREFIX: string = 'harmony_greenhouse_';
   static readonly MQTT_USERNAME: string = '';
   static readonly MQTT_PASSWORD: string = '';
