@@ -41,7 +41,22 @@ struct Index {
   private webController: webview.WebviewController = new webview.WebviewController();
 
   build() {
-    Tabs({ barPosition: BarPosition.End, controller: this.tabsController }) {
+    Tabs({ index: 0, barPosition: BarPosition.End, controller: this.tabsController }) {
+      TabContent() {
+        Web({ src: Constants.WEB_URL, controller: this.webController })
+          .width('100%')
+          .height('100%')
+          .javaScriptAccess(true)
+          .domStorageAccess(true)
+          .zoomAccess(true)
+          .overviewModeAccess(true)
+          .textZoomRatio(100)
+          .onPageEnd(() => {
+            this.webController.runJavaScript(MOBILE_CSS);
+          })
+      }
+      .tabBar('数据看板')
+
       TabContent() {
         GreenhousePage()
       }
@@ -61,21 +76,6 @@ struct Index {
         AlertLogPage()
       }
       .tabBar('报警记录')
-
-      TabContent() {
-        Web({ src: Constants.WEB_URL, controller: this.webController })
-          .width('100%')
-          .height('100%')
-          .javaScriptAccess(true)
-          .domStorageAccess(true)
-          .zoomAccess(true)
-          .overviewModeAccess(true)
-          .textZoomRatio(100)
-          .onPageEnd(() => {
-            this.webController.runJavaScript(MOBILE_CSS);
-          })
-      }
-      .tabBar('数据看板')
     }
     .width('100%')
     .height('100%')

@@ -196,10 +196,10 @@ export struct SensorDataPage {
                 Text('时间').width(130).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
                 Text('操作').width(60).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
               }
-              .backgroundColor('#fafafa').padding(8).borderRadius(4).width(565)
+              .backgroundColor('#fafafa').padding(8).borderRadius(4).width('100%')
 
               if (this.dataList.length === 0) {
-                Text('暂无数据').fontSize(14).fontColor('#999').padding(30).width(565).textAlign(TextAlign.Center)
+                Text('暂无数据').fontSize(14).fontColor('#999').padding(30).width('100%').textAlign(TextAlign.Center)
               } else {
                 List() {
                   ForEach(this.dataList, (item: SensorDataModel) => {
@@ -221,10 +221,10 @@ export struct SensorDataPage {
                         Button('删除').fontSize(11).backgroundColor('#ff4d4f').fontColor('#fff')
                           .onClick(() => this.deleteSensor(item.id)).width(60)
                       }
-                      .width(565).padding(8).alignItems(VerticalAlign.Center)
+                      .width('100%').padding(8).alignItems(VerticalAlign.Center)
                     }.border({ width: { bottom: 0.5 }, color: '#f0f0f0' })
                   })
-                }.width(565).margin({ top: 4 })
+                }.width('100%').margin({ top: 4 })
               }
             }
           }

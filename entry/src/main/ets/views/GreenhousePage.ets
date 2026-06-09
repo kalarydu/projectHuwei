@@ -188,10 +188,10 @@ export struct GreenhousePage {
                 Text('状态').width(60).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
                 Text('操作').width(120).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
               }
-              .backgroundColor('#fafafa').padding(8).borderRadius(4).width(440)
+              .backgroundColor('#fafafa').padding(8).borderRadius(4).width('100%')
 
               if (this.dataList.length === 0) {
-                Text('暂无数据').fontSize(14).fontColor('#999').padding(30).width(440).textAlign(TextAlign.Center)
+                Text('暂无数据').fontSize(14).fontColor('#999').padding(30).width('100%').textAlign(TextAlign.Center)
               } else {
                 List() {
                   ForEach(this.dataList, (item: GreenhouseModel, index: number) => {
@@ -216,11 +216,11 @@ export struct GreenhousePage {
                             .onClick(() => this.deleteGreenhouse(item.id)).margin({ left: 6 })
                         }.width(120)
                       }
-                      .width(440).padding(8).alignItems(VerticalAlign.Center)
+                      .width('100%').padding(8).alignItems(VerticalAlign.Center)
                     }.border({ width: { bottom: 0.5 }, color: '#f0f0f0' })
                   })
                 }
-                .width(440).margin({ top: 4 })
+                .width('100%').margin({ top: 4 })
               }
             }
           }
