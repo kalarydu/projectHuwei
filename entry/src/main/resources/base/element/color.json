@@ -1,0 +1,24 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "primary",
+      "value": "#1890ff"
+    },
+    {
+      "name": "success",
+      "value": "#52c41a"
+    },
+    {
+      "name": "danger",
+      "value": "#ff4d4f"
+    },
+    {
+      "name": "warning",
+      "value": "#faad14"
+    }
+  ]
+}
