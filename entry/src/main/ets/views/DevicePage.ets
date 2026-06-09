@@ -217,52 +217,49 @@ export struct DevicePage {
               .onClick(() => this.loadList(1)).margin({ left: 8 })
           }.margin({ top: 10 }).width('100%')
 
-          Scroll() {
-            Column() {
-              Row() {
-                Text('名称').width(110).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
-                Text('类型').width(70).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
-                Text('状态').width(60).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
-                Text('操作').width(210).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
-              }
-              .backgroundColor('#fafafa').padding(8).borderRadius(4).width('100%')
+          if (this.dataList.length === 0) {
+            Text('暂无数据').fontSize(14).fontColor('#999').padding(30).width('100%').textAlign(TextAlign.Center)
+          } else {
+            List() {
+              ForEach(this.dataList, (item: DeviceModel) => {
+                ListItem() {
+                  Column() {
+                    // 第一行：名称 + 类型标签 + 状态
+                    Row() {
+                      Text(item.deviceName)
+                        .fontSize(15).fontWeight(FontWeight.Bold).fontColor('#333')
+                      Text(Constants.DEVICE_TYPE_MAP[item.deviceType] || item.deviceType)
+                        .fontSize(11).fontColor('#1890ff').backgroundColor('#e6f7ff')
+                        .borderRadius(3).padding({ left: 6, right: 6 }).margin({ left: 6 })
+                      Blank()
+                      Text(item.status === 1 ? '● 开启' : '○ 关闭')
+                        .fontSize(12).fontColor(item.status === 1 ? '#52c41a' : '#ff4d4f')
+                        .backgroundColor(item.status === 1 ? '#f6ffed' : '#fff2f0')
+                        .borderRadius(3).padding({ left: 8, right: 8 })
+                    }.width('100%')
 
-              if (this.dataList.length === 0) {
-                Text('暂无数据').fontSize(14).fontColor('#999').padding(30).width('100%').textAlign(TextAlign.Center)
-              } else {
-                List() {
-                  ForEach(this.dataList, (item: DeviceModel) => {
-                    ListItem() {
-                      Row() {
-                        Column() {
-                          Text(item.deviceName).fontSize(14).fontWeight(FontWeight.Bold).fontColor('#333')
-                          Text(`大棚 #${item.greenhouseId}`).fontSize(11).fontColor('#999')
-                        }.width(110).alignItems(HorizontalAlign.Start)
+                    // 第二行：大棚编号
+                    Text(`大棚 #${item.greenhouseId}`)
+                      .fontSize(12).fontColor('#999').margin({ top: 4 })
 
-                        Text(Constants.DEVICE_TYPE_MAP[item.deviceType] || item.deviceType)
-                          .fontSize(13).fontColor('#666').width(70)
-                        Text(item.status === 1 ? '开启' : '关闭')
-                          .fontSize(11).fontColor(item.status === 1 ? '#52c41a' : '#ff4d4f')
-                          .backgroundColor(item.status === 1 ? '#f6ffed' : '#fff2f0')
-                          .borderRadius(3).padding({ left: 6, right: 6 }).width(60)
-
-                        Row() {
-                          Button(item.status === 1 ? '关闭' : '开启').fontSize(11)
-                            .backgroundColor('#faad14').fontColor('#fff').onClick(() => this.toggleDevice(item.id))
-                          Button('编辑').fontSize(11).backgroundColor('#1890ff').fontColor('#fff')
-                            .onClick(() => this.editDevice(item)).margin({ left: 4 })
-                          Button('删除').fontSize(11).backgroundColor('#ff4d4f').fontColor('#fff')
-                            .onClick(() => this.deleteDevice(item.id)).margin({ left: 4 })
-                        }.width(210)
-                      }
-                      .width('100%').padding(8).alignItems(VerticalAlign.Center)
-                    }.border({ width: { bottom: 0.5 }, color: '#f0f0f0' })
-                  })
-                }.width('100%').margin({ top: 4 })
-              }
-            }
+                    // 第三行：操作按钮
+                    Row() {
+                      Button(item.status === 1 ? '关闭' : '开启')
+                        .fontSize(13).backgroundColor('#faad14').fontColor('#fff')
+                        .onClick(() => this.toggleDevice(item.id))
+                      Button('编辑')
+                        .fontSize(13).backgroundColor('#1890ff').fontColor('#fff')
+                        .onClick(() => this.editDevice(item)).margin({ left: 8 })
+                      Button('删除')
+                        .fontSize(13).backgroundColor('#ff4d4f').fontColor('#fff')
+                        .onClick(() => this.deleteDevice(item.id)).margin({ left: 8 })
+                    }.width('100%').margin({ top: 10 })
+                  }
+                  .width('100%').padding(12).backgroundColor('#fafafa').borderRadius(6)
+                }.margin({ top: 6 }).border({ width: { bottom: 0.5 }, color: '#f0f0f0' })
+              })
+            }.width('100%').margin({ top: 4 })
           }
-          .scrollable(ScrollDirection.Horizontal).scrollBar(BarState.Auto).width('100%').margin({ top: 10 })
 
           PaginationBar({ current: this.currentPage, total: this.totalPages, onPageChange: (p: number) => { this.loadList(p); } })
         }
