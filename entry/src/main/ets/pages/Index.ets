@@ -1,5 +1,4 @@
 import { GreenhousePage } from '../views/GreenhousePage';
-import { SensorDataPage } from '../views/SensorDataPage';
 import { DevicePage } from '../views/DevicePage';
 import { AlertLogPage } from '../views/AlertLogPage';
 import { Constants } from '../common/Constants';
@@ -61,11 +60,6 @@ struct Index {
         GreenhousePage()
       }
       .tabBar('大棚管理')
-
-      TabContent() {
-        SensorDataPage()
-      }
-      .tabBar('传感器数据')
 
       TabContent() {
         DevicePage()
