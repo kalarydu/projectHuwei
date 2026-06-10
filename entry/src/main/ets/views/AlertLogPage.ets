@@ -7,13 +7,6 @@ import { PaginationBar } from '../components/PaginationBar';
 import { MqttUtil } from '../common/MqttUtil';
 import { promptAction } from '@kit.ArkUI';
 
-interface AlertLogFormData {
-  greenhouseId: number;
-  alertType: string;
-  message: string;
-  status: number;
-}
-
 interface MqttAlertPayload {
   greenhouseId: number;
   alertType: string;
@@ -23,15 +16,12 @@ interface MqttAlertPayload {
 
 @Component
 export struct AlertLogPage {
+  @Prop @Watch('onRefreshKeyChange') refreshKey: number = 0;
   @State dataList: AlertLogModel[] = [];
   @State currentPage: number = 1;
   @State totalPages: number = 1;
   @State searchGid: string = '';
   @State searchStatus: string = '';
-  // 表单
-  @State formGid: string = '1';
-  @State formType: string = 'TEMP_HIGH';
-  @State formMsg: string = '';
   // MQTT 状态
   @State mqttConnected: boolean = false;
   private alertCallback: (topic: string, payload: Object) => void = () => {};
@@ -39,6 +29,11 @@ export struct AlertLogPage {
   aboutToAppear(): void {
     this.loadList(1);
     this.initMqtt();
+  }
+
+  // 监听父组件传来的 refreshKey，每次切到此 tab 时刷新报警列表
+  onRefreshKeyChange(): void {
+    this.loadList(1);
   }
 
   aboutToDisappear(): void {
@@ -90,24 +85,6 @@ export struct AlertLogPage {
     } catch (e) { ToastUtil.show('网络错误'); }
   }
 
-  async saveAlert() {
-    if (!this.formMsg.trim()) { ToastUtil.show('请输入报警内容'); return; }
-    const data: AlertLogFormData = {
-      greenhouseId: parseInt(this.formGid) || 1,
-      alertType: this.formType,
-      message: this.formMsg.trim(),
-      status: 0
-    };
-    try {
-      const res = await HttpUtil.post<string>('/api/alert-log', data);
-      if (res.code === 200) {
-        ToastUtil.show('报警已记录');
-        this.loadList(1);
-      }
-      else ToastUtil.show(res.message || '新增失败');
-    } catch (e) { ToastUtil.show('网络错误'); }
-  }
-
   async handleAlert(id: number) {
     try {
       const res = await HttpUtil.put<string>(`/api/alert-log/${id}/handle`);
@@ -135,15 +112,6 @@ export struct AlertLogPage {
 
   formatTime(t: string): string { return t ? t.replace('T', ' ').substring(0, 19) : '-'; }
 
-  getAlertTypeIndex(type: string): number {
-    const keys = ['TEMP_HIGH', 'TEMP_LOW', 'HUMIDITY_HIGH', 'HUMIDITY_LOW', 'CO2_HIGH', 'LIGHT_LOW'];
-    const i = keys.indexOf(type);
-    return i >= 0 ? i : 0;
-  }
-  getAlertTypeByIndex(index: number): string {
-    const keys = ['TEMP_HIGH', 'TEMP_LOW', 'HUMIDITY_HIGH', 'HUMIDITY_LOW', 'CO2_HIGH', 'LIGHT_LOW'];
-    return keys[index] || 'TEMP_HIGH';
-  }
   getSearchStatusIndex(status: string): number {
     if (status === '') return 0;
     return status === '0' ? 1 : 2;
@@ -158,33 +126,6 @@ export struct AlertLogPage {
             .fontSize(12)
             .fontColor(this.mqttConnected ? '#52c41a' : '#999')
         }.width('100%').justifyContent(FlexAlign.End).margin({ bottom: 4 })
-
-        // 表单
-        Column() {
-          Text('新增报警').fontSize(16).fontWeight(FontWeight.Bold).fontColor('#333')
-            .border({ width: { bottom: 1 }, color: '#f0f0f0' }).padding({ bottom: 10 }).width('100%')
-
-          TextInput({ placeholder: '大棚ID', text: this.formGid }).type(InputType.Number)
-            .onChange(v => this.formGid = v).margin({ top: 10 })
-
-          Row() {
-            Text('类型：').fontSize(14).fontColor('#666')
-            Select([
-              { value: '温度过高' }, { value: '温度过低' }, { value: '湿度过高' },
-              { value: '湿度过低' }, { value: 'CO2过高' }, { value: '光照不足' }
-            ])
-              .selected(this.getAlertTypeIndex(this.formType))
-              .onSelect((index: number) => this.formType = this.getAlertTypeByIndex(index))
-              .width(140).margin({ left: 8 })
-          }.margin({ top: 8 }).alignItems(VerticalAlign.Center)
-
-          TextInput({ placeholder: '报警描述', text: this.formMsg })
-            .onChange(v => this.formMsg = v).margin({ top: 8 })
-
-          Button('新增报警').backgroundColor('#1890ff').fontColor('#fff')
-            .onClick(() => this.saveAlert()).margin({ top: 12 })
-        }
-        .backgroundColor('#fff').borderRadius(8).padding(16).width('100%')
 
         // 列表
         Column() {

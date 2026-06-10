@@ -1,12 +1,12 @@
 // 后端 API 基础地址，模拟器中 10.0.2.2 映射到宿主机 localhost
 export class Constants {
-  static readonly BASE_URL: string = 'http://10.190.124.12:8080';
+  static readonly BASE_URL: string = 'http://10.93.199.110:8080';
 
   // MQTT Broker 配置 (WebSocket)
   // Web 看板地址（demo 的 web 前端，含折线图等图表）
-  static readonly WEB_URL: string = 'http://10.190.124.12:8080';
+  static readonly WEB_URL: string = 'http://10.93.199.110:8080';
 
-  static readonly MQTT_BROKER_URL: string = 'tcp://10.190.124.12:1883';
+  static readonly MQTT_BROKER_URL: string = 'tcp://10.93.199.110:1883';
   static readonly MQTT_CLIENT_ID_PREFIX: string = 'harmony_greenhouse_';
   static readonly MQTT_USERNAME: string = '';
   static readonly MQTT_PASSWORD: string = '';
@@ -29,7 +29,21 @@ export class Constants {
     'TEMP_LOW': '温度过低',
     'HUMIDITY_HIGH': '湿度过高',
     'HUMIDITY_LOW': '湿度过低',
-    'CO2_HIGH': 'CO2过高',
-    'LIGHT_LOW': '光照不足'
+    'CO2_HIGH': 'CO2浓度过高',
+    'CO2_LOW': 'CO2浓度过低',
+    'LIGHT_LOW': '光照不足',
+    'SOIL_MOISTURE_HIGH': '土壤湿度过高',
+    'SOIL_MOISTURE_LOW': '土壤湿度过低',
+    'SOIL_PH_HIGH': '土壤pH过高',
+    'SOIL_PH_LOW': '土壤pH过低'
+  };
+
+  static readonly METRIC_LABEL_MAP: Record<string, string> = {
+    'temperature': '温度 (℃)',
+    'humidity': '空气湿度 (%)',
+    'lightIntensity': '光照强度 (Lux)',
+    'co2Concentration': 'CO2浓度 (ppm)',
+    'soilMoisture': '土壤湿度 (%)',
+    'soilPh': '土壤pH值'
   };
 }

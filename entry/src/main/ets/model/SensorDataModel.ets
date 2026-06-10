@@ -6,5 +6,6 @@ export class SensorDataModel {
   lightIntensity: number = 0;
   co2Concentration: number = 0;
   soilMoisture: number = 0;
+  soilPh: number = 0;
   recordTime: string = '';
 }

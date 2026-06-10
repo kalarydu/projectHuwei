@@ -32,10 +32,27 @@ const MOBILE_CSS: string =
     document.head.appendChild(s);
   })()`;
 
+// 隐藏 Web 看板中与 bottom tab 重复的 3 个菜单项，只保留 传感器数据 + AI助手
+const DEDUP_NAV_JS: string =
+  `(function(){
+    // 隐藏重复的侧边栏按钮
+    var tabs = document.querySelectorAll('.sidebar .tab');
+    tabs.forEach(function(btn) {
+      var page = btn.getAttribute('data-page');
+      if (page === 'greenhouse' || page === 'device' || page === 'alert') {
+        btn.style.display = 'none';
+      }
+    });
+    // 默认打开传感器数据页（有折线图）
+    var sensorTab = document.querySelector('.sidebar .tab[data-page="sensor"]');
+    if (sensorTab) sensorTab.click();
+  })()`;
+
 @Entry
 @Component
 struct Index {
   @State currentTab: number = 0;
+  @State alertRefreshKey: number = 0;
   private tabsController: TabsController = new TabsController();
   private webController: webview.WebviewController = new webview.WebviewController();
 
@@ -52,6 +69,7 @@ struct Index {
           .textZoomRatio(100)
           .onPageEnd(() => {
             this.webController.runJavaScript(MOBILE_CSS);
+            this.webController.runJavaScript(DEDUP_NAV_JS);
           })
       }
       .tabBar('数据看板')
@@ -66,14 +84,18 @@ struct Index {
       }
       .tabBar('设备管理')
 
+
       TabContent() {
-        AlertLogPage()
+        AlertLogPage({ refreshKey: this.alertRefreshKey })
       }
       .tabBar('报警记录')
     }
     .width('100%')
     .height('100%')
     .barHeight(56)
-    .onChange((index: number) => { this.currentTab = index; })
+    .onChange((index: number) => {
+      this.currentTab = index;
+      if (index === 3) { this.alertRefreshKey++; }  // 切到报警记录时触发刷新
+    })
   }
 }

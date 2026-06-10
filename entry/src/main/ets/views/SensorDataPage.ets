@@ -13,6 +13,7 @@ interface SensorDataFormData {
   lightIntensity: number;
   co2Concentration: number;
   soilMoisture: number;
+  soilPh: number;
   recordTime: string;
 }
 
@@ -23,6 +24,7 @@ interface MqttSensorPayload {
   lightIntensity: number;
   co2Concentration: number;
   soilMoisture: number;
+  soilPh: number;
   recordTime: string;
 }
 
@@ -39,6 +41,7 @@ export struct SensorDataPage {
   @State formLight: string = '30000';
   @State formCo2: string = '420';
   @State formSoil: string = '55.0';
+  @State formSoilPh: string = '7.0';
   // MQTT 状态
   @State mqttConnected: boolean = false;
   private mqttCallback: (topic: string, payload: Object) => void = () => {};
@@ -64,6 +67,7 @@ export struct SensorDataPage {
           item.lightIntensity === data.lightIntensity &&
           item.co2Concentration === data.co2Concentration &&
           item.soilMoisture === data.soilMoisture &&
+          (item.soilPh ?? 0) === (data.soilPh ?? 0) &&
           item.recordTime === data.recordTime;
       });
       if (exists) {
@@ -77,6 +81,7 @@ export struct SensorDataPage {
         lightIntensity: data.lightIntensity,
         co2Concentration: data.co2Concentration,
         soilMoisture: data.soilMoisture,
+        soilPh: data.soilPh ?? 0,
         recordTime: data.recordTime
       };
       this.dataList = [sensor, ...this.dataList];
@@ -108,6 +113,7 @@ export struct SensorDataPage {
       lightIntensity: parseFloat(this.formLight) || 0,
       co2Concentration: parseFloat(this.formCo2) || 0,
       soilMoisture: parseFloat(this.formSoil) || 0,
+      soilPh: parseFloat(this.formSoilPh) || 0,
       recordTime: new Date().toISOString().replace('Z', '')
     };
     try {
@@ -168,6 +174,10 @@ export struct SensorDataPage {
             TextInput({ placeholder: '土壤湿度(%)', text: this.formSoil }).type(InputType.Number)
               .onChange(v => this.formSoil = v).layoutWeight(1).margin({ left: 8 })
           }.margin({ top: 8 }).width('100%')
+          Row() {
+            TextInput({ placeholder: '土壤pH值', text: this.formSoilPh }).type(InputType.Number)
+              .onChange(v => this.formSoilPh = v).layoutWeight(1)
+          }.margin({ top: 8 }).width('100%')
           Button('新增').backgroundColor('#1890ff').fontColor('#fff')
             .onClick(() => this.saveSensorData()).margin({ top: 12 })
         }
@@ -193,6 +203,7 @@ export struct SensorDataPage {
                 Text('光照').width(65).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
                 Text('CO2').width(65).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
                 Text('土壤').width(65).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
+                Text('pH').width(45).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
                 Text('时间').width(130).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
                 Text('操作').width(60).fontSize(12).fontColor('#666').fontWeight(FontWeight.Bold)
               }
@@ -214,6 +225,7 @@ export struct SensorDataPage {
                         Text(`${item.lightIntensity}`).fontSize(13).fontColor('#333').width(65)
                         Text(`${item.co2Concentration}`).fontSize(13).fontColor('#333').width(65)
                         Text(`${item.soilMoisture}%`).fontSize(13).fontColor('#333').width(65)
+                        Text(`${(item.soilPh ?? 0).toFixed(1)}`).fontSize(13).fontColor('#333').width(45)
                         Column() {
                           Text(this.formatTime(item.recordTime)).fontSize(11).fontColor('#999')
                           Text(`大棚 #${item.greenhouseId}`).fontSize(11).fontColor('#999')
