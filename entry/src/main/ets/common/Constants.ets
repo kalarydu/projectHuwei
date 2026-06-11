@@ -38,6 +38,13 @@ export class Constants {
     'SOIL_PH_LOW': '土壤pH过低'
   };
 
+  // 作物分类 API
+  static readonly API_CLASSIFY = '/api/classify';
+  static readonly API_CLASSIFY_MINIO = '/api/classify/minio';
+  static readonly API_CLASSIFICATION_RECENT = '/api/classification/recent';
+  static readonly API_CLASSIFICATION_STREAM = '/api/classification/stream';
+  static readonly API_CLASSIFICATION_STATUS = '/api/classification/status';
+
   static readonly METRIC_LABEL_MAP: Record<string, string> = {
     'temperature': '温度 (℃)',
     'humidity': '空气湿度 (%)',

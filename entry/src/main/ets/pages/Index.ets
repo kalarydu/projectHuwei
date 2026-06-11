@@ -1,6 +1,7 @@
 import { GreenhousePage } from '../views/GreenhousePage';
 import { DevicePage } from '../views/DevicePage';
 import { AlertLogPage } from '../views/AlertLogPage';
+import { CropMonitorPage } from '../views/CropMonitorPage';
 import { Constants } from '../common/Constants';
 import { webview } from '@kit.ArkWeb';
 
@@ -28,18 +29,19 @@ const MOBILE_CSS: string =
       '.chat-bubble{max-width:90%;font-size:13px;}'+
       '.chart-container{height:200px;}'+
       'canvas{max-width:100%;}'+
+      '.crop-grid{grid-template-columns:1fr;}'+
     '}';
     document.head.appendChild(s);
   })()`;
 
-// 隐藏 Web 看板中与 bottom tab 重复的 3 个菜单项，只保留 传感器数据 + AI助手
+// 隐藏 Web 看板中与原生 Tab 重复的菜单项
+// 只保留 传感器数据 + AI助手；大棚/设备/报警/作物 由原生页面提供
 const DEDUP_NAV_JS: string =
   `(function(){
-    // 隐藏重复的侧边栏按钮
     var tabs = document.querySelectorAll('.sidebar .tab');
     tabs.forEach(function(btn) {
       var page = btn.getAttribute('data-page');
-      if (page === 'greenhouse' || page === 'device' || page === 'alert') {
+      if (page === 'greenhouse' || page === 'device' || page === 'alert' || page === 'crops') {
         btn.style.display = 'none';
       }
     });
@@ -75,6 +77,11 @@ struct Index {
       .tabBar('数据看板')
 
       TabContent() {
+        CropMonitorPage()
+      }
+      .tabBar('作物监测')
+
+      TabContent() {
         GreenhousePage()
       }
       .tabBar('大棚管理')
@@ -83,7 +90,6 @@ struct Index {
         DevicePage()
       }
       .tabBar('设备管理')
-
 
       TabContent() {
         AlertLogPage({ refreshKey: this.alertRefreshKey })
@@ -95,7 +101,7 @@ struct Index {
     .barHeight(56)
     .onChange((index: number) => {
       this.currentTab = index;
-      if (index === 3) { this.alertRefreshKey++; }  // 切到报警记录时触发刷新
+      if (index === 4) { this.alertRefreshKey++; }  // 切到报警记录时触发刷新
     })
   }
 }
