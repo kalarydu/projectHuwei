@@ -39,13 +39,15 @@ projectHuwei/
 │       │   │   └── EntryAbility.ets     # 应用入口（初始化 MQTT 连接）
 │       │   ├── model/                   # 数据模型
 │       │   │   ├── AlertLogModel.ets    # 报警记录
+│       │   │   ├── CropMonitorModel.ets # 🆕 作物分类结果
 │       │   │   ├── DeviceModel.ets      # 设备
 │       │   │   ├── GreenhouseModel.ets  # 大棚
-│       │   │   └── SensorDataModel.ets  # 传感器数据（含 soilPh）
+│       │   │   └── SensorDataModel.ets  # 传感器数据
 │       │   ├── pages/
 │       │   │   └── Index.ets            # 主页面（TabBar 入口）
 │       │   └── views/                   # 业务页面
 │       │       ├── AlertLogPage.ets     # 报警记录页（MQTT 实时 + 列表）
+│       │       ├── CropMonitorPage.ets  # 🆕 作物监测页（MinIO + YOLO 实时分类）
 │       │       ├── DevicePage.ets       # 设备管理页（MQTT 状态 + 远程控制）
 │       │       ├── GreenhousePage.ets   # 大棚管理页（CRUD）
 │       │       └── SensorDataPage.ets   # 传感器数据页（MQTT 实时 + 录入）
@@ -102,11 +104,12 @@ projectHuwei/
 | Tab | 页面 | 类型 | 功能 |
 |-----|------|------|------|
 | 📊 数据看板 | WebView 内嵌后端页面 | Web | 传感器折线图（多棚对比）+ AI 助手对话 |
+| 🌾 作物监测 | CropMonitorPage 🆕 | 原生 | 三大棚（草莓/向日葵/棉花）实时分类结果，每5秒轮询后端 |
 | 🏠 大棚管理 | GreenhousePage | 原生 | 大棚的新增、编辑、删除、列表查询 |
 | ⚙️ 设备管理 | DevicePage | 原生 | 设备 CRUD + 远程开关（MQTT 指令下发） |
 | 🔔 报警记录 | AlertLogPage | 原生 | 报警列表（HTTP）+ MQTT 实时推送 + 处理/删除 |
 
-> **设计原则**：Web 看板侧边栏中与原生 Tab 重复的页面（大棚管理、设备管理、报警记录）已通过 JS 注入隐藏，避免功能重复。Web 看板仅保留**传感器折线图**和 **AI 助手**两个独有功能。
+> **设计原则**：Web 看板侧边栏中与原生 Tab 重复的页面（作物监测、大棚管理、设备管理、报警记录）已通过 JS 注入隐藏，避免功能重复。Web 看板仅保留**传感器折线图**和 **AI 助手**两个独有功能。
 
 ---
 
@@ -184,9 +187,27 @@ export class Constants {
 ### 数据看板 WebView
 
 第一个 Tab 内嵌后端 Web 页面，通过 JS 注入实现：
-- **去重**：隐藏 Web 侧边栏中与原生 Tab 重复的 3 个菜单项
+- **去重**：隐藏 Web 侧边栏中与原生 Tab 重复的 4 个菜单项（作物监测、大棚管理、设备管理、报警记录）
 - **默认页**：自动跳转到传感器数据页（折线图）
 - **移动适配**：注入响应式 CSS 适配手机屏幕
+
+### 🆕 作物监测 (`CropMonitorPage.ets`)
+
+第三个 Tab（🌾 作物监测），通过定时轮询后端 `/api/classification/recent/{key}` 接口，实时展示 MinIO + YOLO 作物分类结果：
+
+| 大棚 | 轮询端点 | 刷新间隔 |
+|------|---------|---------|
+| 🍓 草莓 | `GET /api/classification/recent/strawberry?limit=1` | 5s |
+| 🌻 向日葵 | `GET /api/classification/recent/sunflower?limit=1` | 5s |
+| 🌿 棉花 | `GET /api/classification/recent/cotton?limit=1` | 5s |
+
+每张卡片展示：文件名、生长阶段（大字）、置信度百分比 + 彩色进度条、推理耗时。
+
+| 置信度 | 颜色 |
+|--------|------|
+| ≥ 80% | 🟢 绿色 |
+| 50%–80% | 🟡 黄色 |
+| < 50% | 🔴 红色 |
 
 ---
 
@@ -256,6 +277,22 @@ export class Constants {
 | SOIL_MOISTURE_LOW | 土壤湿度过低 |
 | SOIL_PH_HIGH | 土壤 pH 过高 |
 | SOIL_PH_LOW | 土壤 pH 过低 |
+
+### 🆕 CropMonitorModel（作物分类结果）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | number | 主键 |
+| greenhouseKey | string | 大棚标识：cotton / sunflower / strawberry |
+| greenhouseName | string | 大棚中文名 |
+| objectName | string | MinIO 对象路径 |
+| fileName | string | 文件名 |
+| classId | number | 分类类别 ID（0-13） |
+| classNameCn | string | 中文类别名（如"棉花-开花期"） |
+| classNameEn | string | 英文类别名 |
+| confidence | number | 置信度 [0, 1] |
+| elapsedMs | number | 推理耗时（毫秒） |
+| createTime | string | 分类时间 |
 
 ---
 
