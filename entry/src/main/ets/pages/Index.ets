@@ -35,13 +35,13 @@ const MOBILE_CSS: string =
   })()`;
 
 // 隐藏 Web 看板中与原生 Tab 重复的菜单项
-// 只保留 传感器数据 + AI助手；大棚/设备/报警/作物 由原生页面提供
+// 只保留 传感器数据 + 作物监测 + AI助手；大棚/设备/报警 由原生页面提供
 const DEDUP_NAV_JS: string =
   `(function(){
     var tabs = document.querySelectorAll('.sidebar .tab');
     tabs.forEach(function(btn) {
       var page = btn.getAttribute('data-page');
-      if (page === 'greenhouse' || page === 'device' || page === 'alert' || page === 'crops') {
+      if (page === 'greenhouse' || page === 'device' || page === 'alert') {
         btn.style.display = 'none';
       }
     });

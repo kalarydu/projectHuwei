@@ -201,11 +201,13 @@ const res = await HttpUtil.get<PageResult<GreenhouseModel>>('/api/greenhouse/lis
 
 ### 3.6 作物图像分类
 
+> **数据看板集成**：WebView 内嵌的「数据看板」标签页中现已包含作物监测子页面，通过 SSE（`/api/classification/stream`）实时展示三大棚分类结果。该页面与原生「作物监测」Tab（`CropMonitorPage.ets`）功能互补——WebView 版本使用 SSE 实时推送，原生版本使用 5 秒轮询。
+
 | 方法 | 路径 | 说明 | 调用位置 |
 |------|------|------|----------|
 | POST | `/api/classify` | 📤 上传图片预测 | 后端 Web 页面 |
 | POST | `/api/classify/minio` | ☁️ MinIO 拉取预测 | 后端 Web 页面 |
-| GET | `/api/classification/stream` | 🔗 SSE 实时推送 | 后端 Web 页面 |
+| GET | `/api/classification/stream` | 🔗 SSE 实时推送 | 后端 Web 页面（数据看板-作物监测） |
 | GET | `/api/classification/status` | 📊 SSE 连接状态 | 后端 Web 页面 |
 | GET | `/api/classification/recent/{greenhouseKey}` | 🌾 按大棚查询 | `CropMonitorPage.ets` |
 
