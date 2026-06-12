@@ -1,7 +1,6 @@
 import { GreenhousePage } from '../views/GreenhousePage';
 import { DevicePage } from '../views/DevicePage';
 import { AlertLogPage } from '../views/AlertLogPage';
-import { CropMonitorPage } from '../views/CropMonitorPage';
 import { Constants } from '../common/Constants';
 import { webview } from '@kit.ArkWeb';
 
@@ -77,11 +76,6 @@ struct Index {
       .tabBar('数据看板')
 
       TabContent() {
-        CropMonitorPage()
-      }
-      .tabBar('作物监测')
-
-      TabContent() {
         GreenhousePage()
       }
       .tabBar('大棚管理')
@@ -101,7 +95,7 @@ struct Index {
     .barHeight(56)
     .onChange((index: number) => {
       this.currentTab = index;
-      if (index === 4) { this.alertRefreshKey++; }  // 切到报警记录时触发刷新
+      if (index === 3) { this.alertRefreshKey++; }  // 切到报警记录时触发刷新
     })
   }
 }
