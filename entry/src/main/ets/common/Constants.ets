@@ -19,9 +19,8 @@ export class Constants {
 
   static readonly DEVICE_TYPE_MAP: Record<string, string> = {
     'FAN': '风机',
-    'PUMP': '水泵',
     'LIGHT': '补光灯',
-    'CURTAIN': '卷帘'
+    'IRRIGATION': '灌溉机'
   };
 
   static readonly ALERT_TYPE_MAP: Record<string, string> = {

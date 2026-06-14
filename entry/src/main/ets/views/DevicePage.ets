@@ -180,7 +180,7 @@ export struct DevicePage {
 
           Row() {
             Text('类型：').fontSize(14).fontColor('#666')
-            Select([{ value: '风机' }, { value: '水泵' }, { value: '补光灯' }, { value: '卷帘' }])
+            Select([{ value: '风机' }, { value: '补光灯' }, { value: '灌溉机' }])
               .selected(this.getTypeIndex(this.formType))
               .onSelect((index: number) => this.formType = this.getTypeByIndex(index))
               .width(140).margin({ left: 8 })
@@ -209,7 +209,7 @@ export struct DevicePage {
           Row() {
             TextInput({ placeholder: '大棚ID', text: this.searchGid }).type(InputType.Number)
               .onChange(v => this.searchGid = v).layoutWeight(1)
-            Select([{ value: '全部' }, { value: '风机' }, { value: '水泵' }, { value: '补光灯' }, { value: '卷帘' }])
+            Select([{ value: '全部' }, { value: '风机' }, { value: '补光灯' }, { value: '灌溉机' }])
               .selected(this.getSearchTypeIndex(this.searchType))
               .onSelect((index: number) => this.searchType = index === 0 ? '' : this.getTypeByIndex(index - 1))
               .width(100).margin({ left: 8 })
@@ -271,17 +271,17 @@ export struct DevicePage {
   }
 
   getTypeIndex(type: string): number {
-    const keys = ['FAN', 'PUMP', 'LIGHT', 'CURTAIN'];
+    const keys = ['FAN', 'LIGHT', 'IRRIGATION'];
     const i = keys.indexOf(type);
     return i >= 0 ? i : 0;
   }
   getTypeByIndex(index: number): string {
-    const keys = ['FAN', 'PUMP', 'LIGHT', 'CURTAIN'];
+    const keys = ['FAN', 'LIGHT', 'IRRIGATION'];
     return keys[index] || 'FAN';
   }
   getSearchTypeIndex(type: string): number {
     if (!type) return 0;
-    const keys = ['FAN', 'PUMP', 'LIGHT', 'CURTAIN'];
+    const keys = ['FAN', 'LIGHT', 'IRRIGATION'];
     const i = keys.indexOf(type);
     return i >= 0 ? i + 1 : 0;
   }
