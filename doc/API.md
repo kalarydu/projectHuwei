@@ -92,6 +92,7 @@ const res = await HttpUtil.get<PageResult<GreenhouseModel>>('/api/greenhouse/lis
 | POST | `/api/device` | 新增设备 | `DevicePage.ets` |
 | PUT | `/api/device` | 修改设备 | `DevicePage.ets` |
 | PUT | `/api/device/{id}/toggle` | 🔌 开关设备 | `DevicePage.ets` |
+| PUT | `/api/device/{id}/mode` | 🔄 切换控制模式 | `DevicePage.ets` |
 | DELETE | `/api/device/{id}` | 删除设备 | `DevicePage.ets` |
 
 **GET /api/device/list 请求参数：**
@@ -108,9 +109,8 @@ const res = await HttpUtil.get<PageResult<GreenhouseModel>>('/api/greenhouse/lis
 | 类型码 | 中文名 |
 |--------|--------|
 | FAN | 风机 |
-| PUMP | 水泵 |
 | LIGHT | 补光灯 |
-| CURTAIN | 卷帘 |
+| IRRIGATION | 灌溉机 |
 
 ---
 
@@ -347,8 +347,9 @@ IoT 传感器上报
 | id | number | 主键 |
 | greenhouseId | number | 所属大棚 ID |
 | deviceName | string | 设备名称 |
-| deviceType | string | FAN / PUMP / LIGHT / CURTAIN |
+| deviceType | string | FAN / LIGHT / IRRIGATION |
 | status | number | 0-关闭，1-开启 |
+| mode | string | AUTO-自动控制 / MANUAL-手动控制 |
 | createTime | string | 创建时间 |
 
 ### 5.3 SensorDataModel（传感器数据）

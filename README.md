@@ -233,8 +233,9 @@ export class Constants {
 | id | number | 主键 |
 | greenhouseId | number | 所属大棚 ID |
 | deviceName | string | 设备名称 |
-| deviceType | string | FAN/PUMP/LIGHT/CURTAIN |
+| deviceType | string | FAN / LIGHT / IRRIGATION |
 | status | number | 0-关闭，1-开启 |
+| mode | string | AUTO-自动控制 / MANUAL-手动控制 |
 | createTime | string | 创建时间 |
 
 ### SensorDataModel（传感器数据）
