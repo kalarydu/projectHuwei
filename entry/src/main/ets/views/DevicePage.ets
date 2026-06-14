@@ -141,6 +141,14 @@ export struct DevicePage {
     } catch (e) { ToastUtil.show('网络错误'); }
   }
 
+  async toggleDeviceMode(id: number) {
+    try {
+      const res = await HttpUtil.put<string>(`/api/device/${id}/mode`);
+      if (res.code === 200) { ToastUtil.show(res.data as string || '操作成功'); this.loadList(1); }
+      else ToastUtil.show(res.message || '操作失败');
+    } catch (e) { ToastUtil.show('网络错误'); }
+  }
+
   deleteDevice(id: number) {
     AlertDialog.show({
       message: '确定删除该设备吗？',
@@ -224,7 +232,7 @@ export struct DevicePage {
               ForEach(this.dataList, (item: DeviceModel) => {
                 ListItem() {
                   Column() {
-                    // 第一行：名称 + 类型标签 + 状态
+                    // 第一行：名称 + 类型标签 + 状态 + 模式
                     Row() {
                       Text(item.deviceName)
                         .fontSize(15).fontWeight(FontWeight.Bold).fontColor('#333')
@@ -236,6 +244,10 @@ export struct DevicePage {
                         .fontSize(12).fontColor(item.status === 1 ? '#52c41a' : '#ff4d4f')
                         .backgroundColor(item.status === 1 ? '#f6ffed' : '#fff2f0')
                         .borderRadius(3).padding({ left: 8, right: 8 })
+                      Text(item.mode === 'MANUAL' ? '手动' : '自动')
+                        .fontSize(11).fontColor(item.mode === 'MANUAL' ? '#fa8c16' : '#52c41a')
+                        .backgroundColor(item.mode === 'MANUAL' ? '#fff7e6' : '#f6ffed')
+                        .borderRadius(3).padding({ left: 6, right: 6 }).margin({ left: 4 })
                     }.width('100%')
 
                     // 第二行：大棚编号
@@ -247,6 +259,9 @@ export struct DevicePage {
                       Button(item.status === 1 ? '关闭' : '开启')
                         .fontSize(13).backgroundColor('#faad14').fontColor('#fff')
                         .onClick(() => this.toggleDevice(item.id))
+                      Button(item.mode === 'MANUAL' ? '切自动' : '切手动')
+                        .fontSize(13).backgroundColor('#722ed1').fontColor('#fff')
+                        .onClick(() => this.toggleDeviceMode(item.id)).margin({ left: 8 })
                       Button('编辑')
                         .fontSize(13).backgroundColor('#1890ff').fontColor('#fff')
                         .onClick(() => this.editDevice(item)).margin({ left: 8 })

@@ -4,5 +4,6 @@ export class DeviceModel {
   deviceName: string = '';
   deviceType: string = 'FAN';
   status: number = 0;
+  mode: string = 'AUTO';
   createTime: string = '';
 }
